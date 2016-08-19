@@ -1,4 +1,6 @@
 // Solution video
+// https://www.youtube.com/watch?v=DeFD0EuG4dY&feature=youtu.be
+// Solution github
 // https://github.com/FullstackAcademy/1607-Library/tree/master/18-tp-persistence/solution
 
 var express = require('express');
