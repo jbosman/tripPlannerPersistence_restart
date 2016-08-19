@@ -9,9 +9,13 @@ var Activity = require('../../models/activity');
 
 // -- Day specific
 
+
+
+
 // Get all days with attraction information
 // /days
 router.get('/', function (req, res, next) {
+
     Day.findAll({
         include: [Hotel, Restaurant, Activity],
         order: 'number ASC'

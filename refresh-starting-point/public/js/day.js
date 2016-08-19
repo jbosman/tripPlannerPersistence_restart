@@ -110,20 +110,66 @@ var dayModule = (function () {
         var doThisAfterServerHasAddedAttraction = function () {
             attraction.show();
         };
-        switch (attraction.type) {
+        // switch (attraction.type) {
+        //     case 'hotel':
+        //         if (this.hotel) this.hotel.hide();
+        //         this.hotel = attraction;
+        //         break;
+        //     case 'restaurant':
+        //         utilsModule.pushUnique(this.restaurants, attraction);
+        //         break;
+        //     case 'activity':
+        //         utilsModule.pushUnique(this.activities, attraction);
+        //         break;
+        //     default:
+        //         console.error('bad type:', attraction);
+        // }
+
+           switch (attraction.type) {
             case 'hotel':
                 if (this.hotel) this.hotel.hide();
                 this.hotel = attraction;
+                console.log(this.hotel);
+                $.ajax({
+                    url: '/api/days/' + this.number + '/hotel',
+                    type: 'PUT',
+                    data: 'hotelId='+this.hotel.id
+                })
+                .then(function(){
+                    doThisAfterServerHasAddedAttraction();
+                })
+                .catch(console.error.bind(console));
+                
                 break;
             case 'restaurant':
                 utilsModule.pushUnique(this.restaurants, attraction);
+                $.ajax({
+                    url: '/api/days/' + this.number + '/restaurants',
+                    type: 'PUT',
+                    data: 'restaurantId='+ attraction.id
+                })
+                .then(function(){
+                    doThisAfterServerHasAddedAttraction();
+                })
+                .catch(console.error.bind(console));
                 break;
             case 'activity':
                 utilsModule.pushUnique(this.activities, attraction);
+                $.ajax({
+                    url: '/api/days/' + this.number + '/activities',
+                    type: 'PUT',
+                    data: 'activityId='+attraction.id
+                })
+                .then(function(){
+                    doThisAfterServerHasAddedAttraction();
+                })
+                .catch(console.error.bind(console));
                 break;
             default:
                 console.error('bad type:', attraction);
         }
+
+        
     };
 
     Day.prototype.removeAttraction = function (attraction) {
@@ -139,12 +185,36 @@ var dayModule = (function () {
         switch (attraction.type) {
             case 'hotel':
                 this.hotel = null;
+                $.ajax({
+                    url: '/api/days/' + this.number+ '/hotel',
+                    type: 'DELETE'
+                })
+                .then(function() {
+                    doThisAfterServerHasRemovedAttraction();
+                })
+                .catch(console.error.bind(console));
                 break;
             case 'restaurant':
                 utilsModule.remove(this.restaurants, attraction);
+                $.ajax({
+                    url: '/api/days/' + this.number+ '/restaurants/'+attraction.id,
+                    type: 'DELETE'
+                })
+                .then(function() {
+                    doThisAfterServerHasRemovedAttraction();
+                })
+                .catch(console.error.bind(console));
                 break;
             case 'activity':
                 utilsModule.remove(this.activities, attraction);
+                $.ajax({
+                    url: '/api/days/' + this.number+ '/activities/'+attraction.id,
+                    type: 'DELETE'
+                })
+                .then(function() {
+                    doThisAfterServerHasRemovedAttraction();
+                })
+                .catch(console.error.bind(console));
                 break;
             default:
                 console.error('bad type:', attraction);

@@ -54,6 +54,13 @@ var tripModule = (function () {
                 addDay(createdDay);
             };
 
+            $.post('/api/days', {number: (days.length +1)})
+            .then(function (data) { 
+                doThisWithCreatedDayFromServer(data);
+                console.log('POST response data', data) })
+
+            .catch(console.error.bind(console));
+
         });
 
         $removeButton.on('click', deleteCurrentDay);
@@ -94,6 +101,15 @@ var tripModule = (function () {
             previousDay.hideButton();
         };
 
+        $.ajax({
+            url: '/api/days/'+ currentDay.number,
+            type: 'DELETE'
+        })
+        .then(function() {
+            doThisAfterDayIsDeleted();
+        })
+        .catch(console.error.bind(console));
+
     }
 
     // globally accessible module methods
@@ -102,15 +118,24 @@ var tripModule = (function () {
 
         load: function () {
 
+           
             // JOE SAYS #1
             // Fetch all the days from the server with an AJAX request.
             // Ask the server for the days by GET requesting /days.
             // Call the following function when the server responds
             // with the days.
+
             var doThisWhenServerGivesDaysBack = function (daysFromServer) {
                 daysFromServer.forEach(addDay);
                 switchTo(days[0]);
             };
+
+             $.get('/api/days')
+            .then(function (data) { 
+                doThisWhenServerGivesDaysBack(data);
+                console.log('GET response data', data) })
+            .catch(console.error.bind(console));
+
 
         },
 
